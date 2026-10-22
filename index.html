@@ -1,0 +1,870 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ivan Tulinov</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Unbounded:wght@500;700;800&family=Golos+Text:wght@400;500;600&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Схема: баннер навыков со стрелками от центра, под ним цифры,
+   шкала карьеры и стек. */
+:root {
+  --ink: #0b1016;
+  --slate: #111923;
+  --slate-2: #16212e;
+  --line: #233041;
+  --chalk: #eef3f8;
+  --mute: #8b9cb1;
+  --sky: #33a9f2;
+  --sky-soft: rgba(51, 169, 242, 0.14);
+  --font-banner: "Montserrat", "Arial", system-ui, sans-serif;
+  --font-display: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --font-body: "Golos Text", "Segoe UI", system-ui, sans-serif;
+  --font-hand: "Caveat", "Comic Sans MS", cursive;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--ink);
+  color: var(--chalk);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  text-wrap: balance;
+  margin: 0;
+}
+
+a { color: var(--sky); }
+
+:focus-visible {
+  outline: 2px solid var(--sky);
+  outline-offset: 3px;
+}
+
+/* ---------- Шапка ---------- */
+.top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px 24px;
+  padding-block: 28px 0;
+}
+
+.top__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+.top__role {
+  color: var(--mute);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.top__links {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+.top__icon {
+  display: inline-flex;
+  color: var(--sky);
+  border-radius: 6px;
+  transition: color 0.2s;
+}
+
+.top__icon:hover { color: var(--chalk); }
+
+.top__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ---------- Карта навыков ---------- */
+.hero { padding-block: 24px 40px; }
+
+.hero__lead {
+  max-width: 62ch;
+  color: var(--mute);
+  font-size: 1.05rem;
+  margin: 0 0 8px;
+}
+
+.hero__lead strong { color: var(--chalk); font-weight: 500; }
+
+/* Баннер навыков: 1:1 с макетом 1400×350, координаты в единицах cqw */
+.map {
+  --cyan: #2ab3ff;
+  --white: #ffffff;
+  position: relative;
+  aspect-ratio: 4 / 1;
+  max-width: 100%;
+  margin-block: 8px 28px;
+  border-radius: 12px;
+  overflow: hidden;
+  container-type: inline-size;
+  font-family: var(--font-banner);
+}
+
+.map__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#arrows path {
+  fill: none;
+  stroke: var(--cyan);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.2s, stroke-width 0.2s;
+}
+
+#arrows .is-active path {
+  stroke: var(--white);
+  stroke-width: 3.2;
+}
+
+
+.hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  font-weight: 800;
+  font-size: 4cqw;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--white);
+}
+
+.hub__accent {
+  color: var(--cyan);
+  background: linear-gradient(180deg, #5fd0ff 0%, #12a4f5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.skill {
+  position: absolute;
+  z-index: 2;
+  cursor: default;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.15cqw;
+  white-space: nowrap;
+}
+
+.skill__icon {
+  flex: none;
+  width: 2.3cqw;
+  height: 2.3cqw;
+  fill: none;
+  stroke: var(--cyan);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.skill__name {
+  font-weight: 700;
+  font-size: 1.43cqw;
+  line-height: 1.2;
+  color: var(--white);
+}
+
+.skill__note {
+  font-weight: 600;
+  font-size: 0.93cqw;
+  line-height: 1.2;
+  margin-top: 0.4cqw;
+  color: var(--cyan);
+}
+
+/* ---------- Цифры ---------- */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.fact {
+  background: var(--slate);
+  padding: 20px 22px;
+}
+
+.fact__num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--chalk);
+  font-variant-numeric: tabular-nums;
+}
+
+.fact__num em {
+  font-style: normal;
+  color: var(--sky);
+}
+
+.fact__label {
+  color: var(--mute);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+/* ---------- Секции ---------- */
+.section { padding-block: 60px 0; }
+
+.eyebrow {
+  font-family: var(--font-hand);
+  font-size: 1.5rem;
+  color: var(--sky);
+  margin: 0 0 4px;
+}
+
+.section__title {
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  line-height: 1.15;
+  margin-bottom: 28px;
+}
+
+/* ---------- Стек ---------- */
+.stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.groups {
+  display: grid;
+  gap: 22px;
+}
+
+.group__name {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--mute);
+  margin: 0 0 10px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag {
+  font-size: 0.92rem;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--slate);
+}
+
+.tag--key {
+  border-color: var(--sky);
+  color: var(--chalk);
+  background: var(--sky-soft);
+}
+
+.code {
+  min-width: 0;
+  background: var(--slate);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.code__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--mute);
+}
+
+.code pre {
+  margin: 0;
+  padding: 18px 16px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.7;
+  color: var(--chalk);
+}
+
+.code b,
+.code i,
+.code u,
+.code em {
+  font-weight: inherit;
+  font-style: normal;
+  text-decoration: none;
+}
+
+.code b { color: var(--sky); }
+.code i { color: #9fd9a8; }
+.code u { color: #f2c46d; }
+.code em { color: var(--mute); }
+
+.code__note {
+  font-family: var(--font-hand);
+  font-size: 1.25rem;
+  color: var(--mute);
+  padding: 0 16px 14px;
+}
+
+.career {
+  position: relative;
+  padding-bottom: 28px;
+}
+
+main { padding-bottom: 72px; }
+
+.career__bar {
+  display: flex;
+  height: 44px;
+  border-radius: 8px;
+  overflow: hidden;
+  gap: 2px;
+}
+
+.career__seg {
+  min-width: 4px;
+  background: var(--slate-2);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 0.8rem;
+  color: var(--mute);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.career__seg--ws {
+  background: var(--sky);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.career__ticks {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22px;
+}
+
+.career__tick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--mute);
+  font-variant-numeric: tabular-nums;
+}
+
+.career__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-top: 14px;
+  color: var(--mute);
+  font-size: 0.9rem;
+}
+
+.career__legend span::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 8px;
+  vertical-align: 0;
+  background: var(--slate-2);
+}
+
+.career__legend .lg-ws::before { background: var(--sky); }
+
+/* ---------- Узкие экраны ---------- */
+@media (max-width: 820px) {
+  .top { grid-template-columns: minmax(0, 1fr) auto; }
+
+  .top__role {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    text-align: left;
+  }
+
+  .map {
+    aspect-ratio: auto;
+    display: grid;
+    gap: 16px;
+    padding: 28px 20px;
+  }
+
+  .map__svg { display: none; }
+
+  .hub,
+  .skill {
+    position: static;
+    transform: none;
+  }
+
+  .hub {
+    font-size: 2.3rem;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .skill { gap: 12px; white-space: normal; }
+  .skill__icon { width: 28px; height: 28px; }
+  .skill__name { font-size: 1.05rem; }
+  .skill__note { font-size: 0.85rem; margin-top: 3px; }
+
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stack { grid-template-columns: minmax(0, 1fr); }
+  .career__seg { font-size: 0; padding: 0; }
+}
+
+</style>
+</head>
+<body style="margin: 0">
+<header class="wrap top">
+  <div class="top__name">energiay@gmail.com</div>
+  <div class="top__role">Senior разработчик WebSoft HCM (WebTutor)</div>
+  <div class="top__links">
+    <a class="top__icon" href="https://www.linkedin.com/in/itulinov/"
+      target="_blank" rel="noopener" aria-label="LinkedIn"
+      title="LinkedIn">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="2" y="2" width="20" height="20" rx="4"
+          fill="currentColor" />
+        <g fill="var(--ink)">
+          <circle cx="7.5" cy="7.4" r="1.6" />
+          <rect x="6.1" y="10" width="2.8" height="8" />
+          <path d="M11 10h2.7v1.2c.5-.8 1.5-1.4 2.8-1.4 2.2 0 3 1.4 3
+            3.6V18h-2.8v-4.1c0-1-.3-1.8-1.3-1.8s-1.6.8-1.6 1.8V18H11Z" />
+        </g>
+      </svg>
+    </a>
+    <a class="top__icon" href="https://t.me/itulinov" target="_blank"
+      rel="noopener" aria-label="Telegram @itulinov"
+      title="Telegram @itulinov">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" fill="currentColor" />
+        <path fill="var(--ink)" d="M6.2 11.7 16.6 7.6c.5-.2.9.1.8.8l-1.8
+          8.4c-.1.6-.5.7-1 .4l-2.8-2.1-1.3 1.3c-.2.2-.3.2-.5.2l.2-2.9
+          5.3-4.8c.2-.2 0-.3-.3-.1l-6.6 4.1-2.8-.9c-.6-.2-.6-.6.2-.9Z" />
+      </svg>
+    </a>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <p class="hero__lead">
+      С 2016 года строю порталы обучения на <strong>WebSoft HCM</strong> для
+      L&amp;D и HR: ИТСК, Почта Банк, Спортмастер. С 2022-го веду портал
+      Билайна, где учатся <strong>50 тысяч сотрудников</strong>.
+      Делаю универсальные решения, которые не устаревают.
+    </p>
+
+    <div class="map" id="map">
+      <svg class="map__svg" viewBox="0 0 1400 350"
+        preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <filter id="chalk" x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8"
+              numOctaves="2" seed="4" result="n" />
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" />
+          </filter>
+          <symbol id="i-link" viewBox="0 0 24 24">
+            <path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" />
+            <path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" />
+          </symbol>
+          <symbol id="i-layers" viewBox="0 0 24 24">
+            <path d="M12 2 2 7l10 5 10-5-10-5Z" />
+            <path d="m2 12 10 5 10-5" />
+            <path d="m2 17 10 5 10-5" />
+          </symbol>
+          <symbol id="i-nodes" viewBox="0 0 24 24">
+            <circle cx="12" cy="5" r="3" />
+            <circle cx="5" cy="19" r="3" />
+            <circle cx="19" cy="19" r="3" />
+            <path d="M10.6 7.7 6.4 16.3M13.4 7.7l4.2 8.6M8 19h8" />
+          </symbol>
+          <symbol id="i-chart" viewBox="0 0 24 24">
+            <rect x="2" y="2" width="20" height="20" rx="2" />
+            <path d="M7 18v-4M11 18v-6M15 18v-3M19 18V9" />
+            <path d="m5 11 5-4 4 3 6-5" />
+          </symbol>
+          <symbol id="i-users" viewBox="0 0 24 24">
+            <circle cx="9" cy="7" r="4" />
+            <path d="M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" />
+            <path d="M16 3.1a4 4 0 0 1 0 7.8M22 21v-2a4 4 0 0 0-3-3.9" />
+          </symbol>
+          <symbol id="i-code" viewBox="0 0 24 24">
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <path d="M8 21h8M12 17v4" />
+            <path d="m10 7.5-2.5 2.5 2.5 2.5M14 7.5l2.5 2.5-2.5 2.5" />
+          </symbol>
+          <symbol id="i-db" viewBox="0 0 24 24">
+            <ellipse cx="12" cy="5" rx="8" ry="3" />
+            <path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5" />
+            <path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" />
+          </symbol>
+          <symbol id="i-gear" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3" />
+            <circle cx="12" cy="12" r="7" />
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+            <path d="m4.9 4.9 2.1 2.1M17 17l2.1 2.1" />
+            <path d="m4.9 19.1 2.1-2.1M17 7l2.1-2.1" />
+          </symbol>
+          <symbol id="i-doc" viewBox="0 0 24 24">
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+            <path d="M14 2v6h6M8 13h8M8 17h8M8 9h2" />
+          </symbol>
+        </defs>
+        <g id="arrows" filter="url(#chalk)">
+          <g>
+            <path d="M592 128 Q561.8 95.4 520 80" />
+            <path d="M532.9 78.1 L520 80 L528.6 89.8" />
+          </g>
+          <g>
+            <path d="M700 128 Q694.2 104 700 80" />
+            <path d="M703.4 92.5 L700 80 L691.3 89.6" />
+          </g>
+          <g>
+            <path d="M808 128 Q839.8 110.2 860 80" />
+            <path d="M858.8 92.9 L860 80 L848.5 86" />
+          </g>
+          <g>
+            <path d="M522 150 Q473.9 147.8 432 124" />
+            <path d="M445 124.2 L432 124 L438.8 135.1" />
+          </g>
+          <g>
+            <path d="M522 186 Q473.6 185 430 206" />
+            <path d="M437.6 195.4 L430 206 L443 206.7" />
+          </g>
+          <g>
+            <path d="M888 150 Q926.9 126.9 972 124" />
+            <path d="M961 131 L972 124 L960.2 118.5" />
+          </g>
+          <g>
+            <path d="M888 186 Q929.6 206.6 976 206" />
+            <path d="M964.7 212.4 L976 206 L964.5 199.9" />
+          </g>
+          <g>
+            <path d="M592 212 Q562.4 247.1 520 265" />
+            <path d="M528.1 254.8 L520 265 L532.9 266.3" />
+          </g>
+          <g>
+            <path d="M700 212 Q693.3 240 700 268" />
+            <path d="M691.3 258.4 L700 268 L703.4 255.5" />
+          </g>
+          <g>
+            <path d="M808 212 Q845.4 231.1 870 265" />
+            <path d="M858.3 259.4 L870 265 L868.3 252.1" />
+          </g>
+        </g>
+      </svg>
+
+      <div class="hub">MY <span class="hub__accent">SKILLS</span></div>
+
+      <div class="skill" style="left: 24%; top: 6.86%">
+        <svg class="skill__icon"><use href="#i-link" /></svg>
+        <div>
+          <div class="skill__name">WebSoft HCM</div>
+          <div class="skill__note">WebTutor</div>
+        </div>
+      </div>
+      <div class="skill" style="left: 43.07%; top: 6.86%">
+        <svg class="skill__icon"><use href="#i-layers" /></svg>
+        <div>
+          <div class="skill__name">Full Stack</div>
+          <div class="skill__note">frontend • backend</div>
+        </div>
+      </div>
+      <div class="skill" style="left: 61.14%; top: 6.86%">
+        <svg class="skill__icon"><use href="#i-nodes" /></svg>
+        <div>
+          <div class="skill__name">Интеграции</div>
+          <div class="skill__note">API • OAuth2/JWT • SSO • OpenAPI</div>
+        </div>
+      </div>
+      <div class="skill" style="left: 5.93%; top: 28%">
+        <svg class="skill__icon"><use href="#i-chart" /></svg>
+        <div>
+          <div class="skill__name">Анализ и оптимизация</div>
+          <div class="skill__note">SQL • XQuery • Индексы • Кэширование</div>
+        </div>
+      </div>
+      <div class="skill" style="left: 5.93%; top: 53.43%">
+        <svg class="skill__icon"><use href="#i-users" /></svg>
+        <div>
+          <div class="skill__name">Командная работа</div>
+          <div class="skill__note">Git • Code Review • Планирование</div>
+        </div>
+      </div>
+      <div class="skill" style="left: 71.71%; top: 28%">
+        <svg class="skill__icon"><use href="#i-code" /></svg>
+        <div>
+          <div class="skill__name">Frontend</div>
+          <div class="skill__note">HTML • CSS • JavaScript • React</div>
+        </div>
+      </div>
+      <div class="skill" style="left: 71.57%; top: 52.86%">
+        <svg class="skill__icon"><use href="#i-db" /></svg>
+        <div>
+          <div class="skill__name">Backend</div>
+          <div class="skill__note">SSJS • Библиотеки • API • Инкапсуляция</div>
+        </div>
+      </div>
+      <div class="skill" style="left: 21.93%; top: 80.57%">
+        <svg class="skill__icon"><use href="#i-db" /></svg>
+        <div>
+          <div class="skill__name">Базы данных</div>
+          <div class="skill__note">MS SQL • PostgreSQL • Oracle</div>
+        </div>
+      </div>
+      <div class="skill" style="left: 43.5%; top: 80.57%">
+        <svg class="skill__icon"><use href="#i-gear" /></svg>
+        <div>
+          <div class="skill__name">Git &amp; DevOps</div>
+          <div class="skill__note">Webpack • CI/CD</div>
+        </div>
+      </div>
+      <div class="skill" style="left: 62.64%; top: 80.57%">
+        <svg class="skill__icon"><use href="#i-doc" /></svg>
+        <div>
+          <div class="skill__name">Документация</div>
+          <div class="skill__note">ТЗ • Инструкции • Описание разработок</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="facts">
+      <div class="fact">
+        <div class="fact__num">10<em>+</em></div>
+        <div class="fact__label">лет на WebSoft HCM, с июля 2016</div>
+      </div>
+      <div class="fact">
+        <div class="fact__num">18</div>
+        <div class="fact__label">лет в IT</div>
+      </div>
+      <div class="fact">
+        <div class="fact__num">50<em>k</em></div>
+        <div class="fact__label">пользователей под нагрузкой</div>
+      </div>
+      <div class="fact">
+        <div class="fact__num">4</div>
+        <div class="fact__label">компании, развивал платформу</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section" id="career">
+    <p class="eyebrow">2008 → сейчас</p>
+    <h2 class="section__title">Карьера на одной шкале</h2>
+    <div class="career">
+      <div class="career__bar" id="careerBar"></div>
+      <div class="career__ticks" id="careerTicks"></div>
+    </div>
+    <div class="career__legend">
+      <span class="lg-ws">WebSoft HCM / WebTutor</span>
+      <span>банковское ПО, RSL, администрирование</span>
+    </div>
+  </section>
+
+  <section class="wrap section" id="stack">
+    <p class="eyebrow">чем работаю</p>
+    <h2 class="section__title">Стек</h2>
+    <div class="stack">
+      <div class="groups">
+        <div>
+          <h3 class="group__name">Платформы</h3>
+          <ul class="tags">
+            <li class="tag tag--key">WebSoft HCM (WebTutor) 2025.1.1221</li>
+            <li class="tag">MS Windows</li>
+            <li class="tag">Linux</li>
+            <li class="tag">IIS</li>
+            <li class="tag">Kestrel</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="group__name">Языки</h3>
+          <ul class="tags">
+            <li class="tag tag--key">SSJS</li>
+            <li class="tag tag--key">JavaScript</li>
+            <li class="tag tag--key">T-SQL</li>
+            <li class="tag">XQuery</li>
+            <li class="tag">SPXML</li>
+            <li class="tag">HTML/XAML шаблоны</li>
+            <li class="tag">HTML5</li>
+            <li class="tag">CSS3</li>
+            <li class="tag">Node.js</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="group__name">Инструменты</h3>
+          <ul class="tags">
+            <li class="tag tag--key">React</li>
+            <li class="tag">Redux</li>
+            <li class="tag">Router</li>
+            <li class="tag">Ant Design</li>
+            <li class="tag">MUI</li>
+            <li class="tag">Webpack</li>
+            <li class="tag">Git</li>
+            <li class="tag">Confluence</li>
+            <li class="tag">JSDoc</li>
+            <li class="tag">Bootstrap</li>
+            <li class="tag">REST API</li>
+            <li class="tag">OpenAPI</li>
+            <li class="tag">OAuth2/JWT</li>
+            <li class="tag">1С/BI</li>
+            <li class="tag">LLM</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="group__name">Базы данных</h3>
+          <ul class="tags">
+            <li class="tag tag--key">MS SQL Server</li>
+            <li class="tag">PostgreSQL</li>
+            <li class="tag">Oracle</li>
+          </ul>
+        </div>
+      </div>
+
+      <figure class="code" style="margin:0">
+        <div class="code__head">
+          <span>adaptation_agent.js</span>
+          <span>SSJS · агент</span>
+        </div>
+<pre><code><b>var</b> query = <u>getMainSql</u>()
+<b>var</b> adaptations = <u>XQuery</u>(<i>"sql: "</i> + query)
+<b>var</b> LIB = <u>getRazumCommonLib</u>()
+
+<b>var</b> adaptation, card
+<b>for</b> (adaptation <b>in</b> adaptations) {
+    card = tools.<u>open_doc</u>(adaptation.id)
+    <b>if</b> (card == <b>undefined</b>) {
+        <b>continue</b>
+    }
+
+    LIB.<u>fillTasks</u>(card)
+}</code></pre>
+        <figcaption class="code__note">
+          так выглядит обычный день: агент проходит по адаптациям
+          и заполняет задачи в карточках через общую библиотеку портала
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+</main>
+
+<script>
+function getCareer() {
+  return [
+    { from: 2008.42, to: 2016.25, name: "Инвестторгбанк", ws: false },
+    { from: 2016.25, to: 2016.5, name: "", ws: false },
+    { from: 2016.5, to: 2017.62, name: "ИТСК", ws: true },
+    { from: 2017.62, to: 2020.17, name: "Почта Банк", ws: true },
+    { from: 2020.17, to: 2022.67, name: "Спортмастер", ws: true },
+    { from: 2022.67, to: 2026.8, name: "Билайн", ws: true }
+  ]
+}
+
+function initCareer() {
+  const elBar = document.getElementById("careerBar")
+  const elTicks = document.getElementById("careerTicks")
+  const aJobs = getCareer()
+  const nStart = aJobs[0].from
+  const nEnd = aJobs[aJobs.length - 1].to
+  const nSpan = nEnd - nStart
+  for (const oJob of aJobs) {
+    const el = document.createElement("div")
+    el.className = oJob.ws ? "career__seg career__seg--ws" : "career__seg"
+    el.style.flexGrow = oJob.to - oJob.from
+    el.style.flexBasis = "0"
+    el.textContent = oJob.name
+    el.title = oJob.name
+    elBar.append(el)
+  }
+  for (let nYear = 2010; nYear <= 2022; nYear += 4) {
+    const elTick = document.createElement("span")
+    const nLeft = ((nYear - nStart) / nSpan) * 100
+    elTick.className = "career__tick"
+    elTick.style.left = nLeft + "%"
+    elTick.textContent = nYear
+    elTicks.append(elTick)
+  }
+}
+
+function bindArrowHover() {
+  const aSkills = document.querySelectorAll(".skill")
+  const aArrows = document.querySelectorAll("#arrows > g")
+  for (let i = 0; i < aSkills.length; i++) {
+    const elArrow = aArrows[i]
+    if (!elArrow) {
+      continue
+    }
+
+    const onEnter = function () {
+      elArrow.classList.add("is-active")
+    }
+    const onLeave = function () {
+      elArrow.classList.remove("is-active")
+    }
+    aSkills[i].addEventListener("mouseenter", onEnter)
+    aSkills[i].addEventListener("mouseleave", onLeave)
+  }
+}
+
+initCareer()
+bindArrowHover()
+</script>
+</body>
+</html>
